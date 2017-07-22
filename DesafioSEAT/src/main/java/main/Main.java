@@ -5,15 +5,10 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
-
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-
 import entity.Fila;
 import entity.RespostaGet;
 
@@ -31,19 +26,21 @@ public class Main {
 		respostaGet.setInput(respostaGet.removeAtendidas(respostaGet.getInput()));
 		respostaGet.eliminaDuplicadas(respostaGet.getInput());
 		respostaGet.sortFila(respostaGet.getInput());
-		
-		int i=0;
+
+		int naFrente = 0;
+		long espera = 300000;
 		for (Fila f : respostaGet.getInput()) {
-			f.setNaFrente(i);
-			i++;
+			f.setNaFrente(naFrente);
+			f.setEspera(espera);
+			naFrente++;
+			espera += 300000;
 		}
 
 		Document document = (Document) Jsoup.connect(respostaGet.getPostTo().getUrl())
-				.data("nome", respostaGet.getNome())
-				.data("chave", respostaGet.getChave())
-				.data("resultado", gson.toJson(respostaGet.getInput()))
-				.post();
+				.data("nome", respostaGet.getNome()).data("chave", respostaGet.getChave())
+				.data("resultado", gson.toJson(respostaGet.getInput())).post();
 		System.out.println(document.toString());
 
+		
 	}
 }

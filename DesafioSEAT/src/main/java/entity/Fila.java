@@ -18,6 +18,16 @@ public class Fila {
 
 	private int naFrente;
 	
+	private long espera;
+	
+	
+	public long getEspera() {
+		return espera;
+	}
+
+	public void setEspera(long espera) {
+		this.espera = espera;
+	}
 
 	public int getNaFrente() {
 		return naFrente;
