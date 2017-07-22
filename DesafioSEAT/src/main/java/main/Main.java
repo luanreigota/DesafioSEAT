@@ -40,6 +40,7 @@ public class Main {
 		content = document.body().toString();
 		content = content.substring(content.indexOf("<body>")+6,content.indexOf("</body>"));
 		respostaGet= gson.fromJson(content, RespostaGet.class);
+
 		System.out.println(respostaGet.getMailTo());
 
 	}
