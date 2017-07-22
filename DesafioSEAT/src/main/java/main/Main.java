@@ -1,10 +1,7 @@
 package main;
 
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Reader;
 import java.net.MalformedURLException;
-import java.net.URL;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import com.google.gson.Gson;
@@ -15,13 +12,13 @@ import entity.RespostaGet;
 public class Main {
 
 	public static void main(String[] args) throws MalformedURLException, IOException {
-		Reader reader = new InputStreamReader(
-				new URL("http://seat.ind.br/processo-seletivo/desafio-2017-03.php?nome=luan%20reigota%20lameirinhas")
-						.openStream()); // Read the json output
+		Document document = (Document) Jsoup.connect("http://seat.ind.br/processo-seletivo/desafio-2017-03.php?nome=luan%20reigota%20lameirinhas").get();
+		String content = document.body().toString();
+		
+		content = content.substring(content.indexOf("<body>")+6,content.indexOf("</body>"));
+		
 		Gson gson = new GsonBuilder().create();
-		RespostaGet respostaGet = gson.fromJson(reader, RespostaGet.class);
-
-		System.out.println(respostaGet.getMensagem());
+		RespostaGet respostaGet = gson.fromJson(content, RespostaGet.class);
 
 		respostaGet.setInput(respostaGet.removeAtendidas(respostaGet.getInput()));
 		respostaGet.eliminaDuplicadas(respostaGet.getInput());
@@ -36,11 +33,14 @@ public class Main {
 			espera += 300000;
 		}
 
-		Document document = (Document) Jsoup.connect(respostaGet.getPostTo().getUrl())
+		document = (Document) Jsoup.connect(respostaGet.getPostTo().getUrl())
 				.data("nome", respostaGet.getNome()).data("chave", respostaGet.getChave())
 				.data("resultado", gson.toJson(respostaGet.getInput())).post();
-		System.out.println(document.toString());
 
-		
+		content = document.body().toString();
+		content = content.substring(content.indexOf("<body>")+6,content.indexOf("</body>"));
+		respostaGet= gson.fromJson(content, RespostaGet.class);
+		System.out.println(respostaGet.getMailTo());
+
 	}
 }

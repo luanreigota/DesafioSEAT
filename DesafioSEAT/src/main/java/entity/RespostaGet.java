@@ -19,6 +19,38 @@ public class RespostaGet {
 	
 	private PostTo postTo;
 	
+	private String mailTo;
+	
+	private int milestone;
+	
+	private String subject;
+	
+
+	
+	
+	public int getMilestone() {
+		return milestone;
+	}
+
+	public void setMilestone(int milestone) {
+		this.milestone = milestone;
+	}
+
+	public String getSubject() {
+		return subject;
+	}
+
+	public void setSubject(String subject) {
+		this.subject = subject;
+	}
+
+	public String getMailTo() {
+		return mailTo;
+	}
+
+	public void setMailTo(String mailTo) {
+		this.mailTo = mailTo;
+	}
 
 	public String getMensagem() {
 		return mensagem;
