@@ -137,16 +137,19 @@ public class RespostaGet {
 		input = fila;
 	}
 
-	public void removeAtendidas() {
+	public List<Fila> separarAtendidas() {
 		List<Fila> fila = input;
-
+		List<Fila> filaAtandidas = new ArrayList<Fila>();
 		List<Fila> f = new ArrayList<Fila>();
 		for (int i = 0; i < fila.size(); i++) {
 			if (Strings.isNullOrEmpty(fila.get(i).getAtendente())) {
 				f.add(fila.get(i));
+			}else{
+				filaAtandidas.add(fila.get(i));
 			}
 		}
 		input = f;
+		return filaAtandidas;
 	}
 
 	public void calcOrdenamentoTempo() {
