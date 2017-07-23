@@ -121,21 +121,6 @@ public class RespostaGet {
 		return fila;
 	}
 
-	public void eliminaDuplicadas() {
-
-		List<Fila> fila = input;
-
-		for (int i = 0; i < fila.size(); i++) {
-			Fila f = fila.get(i);
-			fila.remove(i);
-			if (fila.contains(f)) {
-				i = 0;
-			} else {
-				fila.add(f);
-			}
-		}
-		input = fila;
-	}
 
 	public List<Fila> separarAtendidas() {
 		List<Fila> fila = input;
