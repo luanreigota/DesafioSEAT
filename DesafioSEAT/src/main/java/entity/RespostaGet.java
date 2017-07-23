@@ -10,24 +10,21 @@ import java.util.List;
 public class RespostaGet {
 
 	private String mensagem;
-	
-	private String nome;
-	
-	private String chave;
-	
-	private List<Fila> input;
-	
-	private PostTo postTo;
-	
-	private String mailTo;
-	
-	private int milestone;
-	
-	private String subject;
-	
 
-	
-	
+	private String nome;
+
+	private String chave;
+
+	private List<Fila> input;
+
+	private PostTo postTo;
+
+	private String mailTo;
+
+	private int milestone;
+
+	private String subject;
+
 	public int getMilestone() {
 		return milestone;
 	}
@@ -91,44 +88,73 @@ public class RespostaGet {
 	public void setPostTo(PostTo postTo) {
 		this.postTo = postTo;
 	}
-	
-	
-	public List<Fila> sortFila(List<Fila> fila){
-		
+
+	public List<Fila> sortFila() {
+
+		List<Fila> fila = new ArrayList<Fila>();
+		List<Fila> filaPreferencial = new ArrayList<Fila>();
+		for (int i = 0; i < input.size(); i++) {
+			if (!input.get(i).getPrioridade().equalsIgnoreCase("preferencial"))
+				fila.add(input.get(i));
+			else
+				filaPreferencial.add(input.get(i));
+		}
+
+		Collections.sort(filaPreferencial, new Comparator<Fila>() {
+			public int compare(Fila f1, Fila f2) {
+				// TODO Auto-generated method stub
+				return f1.getEmissao().compareTo(f2.getEmissao());
+			}
+		});
+
 		Collections.sort(fila, new Comparator<Fila>() {
 			public int compare(Fila f1, Fila f2) {
 				// TODO Auto-generated method stub
 				return f1.getEmissao().compareTo(f2.getEmissao());
 			}
 		});
-		
+
+		for (int i = filaPreferencial.size() - 1; i > 0; i--) {
+			fila.add(0, filaPreferencial.get(i));
+		}
+
 		return fila;
 	}
-	
-	
-	public List<Fila> eliminaDuplicadas(List<Fila> fila){
-		
+
+	public void eliminaDuplicadas() {
+
+		List<Fila> fila = input;
+
 		for (int i = 0; i < fila.size(); i++) {
 			Fila f = fila.get(i);
 			fila.remove(i);
-			if(fila.contains(f)){
+			if (fila.contains(f)) {
 				i = 0;
-			}else{
+			} else {
 				fila.add(f);
 			}
 		}
-		
-		return fila;
+		input = fila;
 	}
-	
-	public List<Fila> removeAtendidas(List<Fila> fila){
+
+	public void removeAtendidas() {
+		List<Fila> fila = input;
+
 		List<Fila> f = new ArrayList<Fila>();
 		for (int i = 0; i < fila.size(); i++) {
-			if(Strings.isNullOrEmpty(fila.get(i).getAtendente())){
+			if (Strings.isNullOrEmpty(fila.get(i).getAtendente())) {
 				f.add(fila.get(i));
 			}
 		}
-		return f;
+		input = f;
 	}
-	
+
+	public void calcOrdenamentoTempo() {
+		long espera = 300000;
+		for (int i = 0; i < input.size(); i++) {
+			input.get(i).setNaFrente(i);
+			input.get(i).setEspera(espera);
+			espera += 300000;
+		}
+	}
 }

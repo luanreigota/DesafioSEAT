@@ -11,37 +11,38 @@ import entity.RespostaGet;
 
 public class Main {
 
-	public static void main(String[] args) throws MalformedURLException, IOException {
-		Document document = (Document) Jsoup.connect("http://seat.ind.br/processo-seletivo/desafio-2017-03.php?nome=luan%20reigota%20lameirinhas").get();
+	public static void main(String[] args) throws MalformedURLException, IOException, InterruptedException {
+		Document document = (Document) Jsoup
+				.connect("http://seat.ind.br/processo-seletivo/desafio-2017-03.php?nome=luan%20reigota%20lameirinhas")
+				.get();
 		String content = document.body().toString();
-		
-		content = content.substring(content.indexOf("<body>")+6,content.indexOf("</body>"));
-		
+
+		content = content.substring(content.indexOf("<body>") + 6, content.indexOf("</body>"));
+
 		Gson gson = new GsonBuilder().create();
 		RespostaGet respostaGet = gson.fromJson(content, RespostaGet.class);
 
-		respostaGet.setInput(respostaGet.removeAtendidas(respostaGet.getInput()));
-		respostaGet.eliminaDuplicadas(respostaGet.getInput());
-		respostaGet.sortFila(respostaGet.getInput());
+		respostaGet.removeAtendidas();
+		respostaGet.eliminaDuplicadas();
+		respostaGet.setInput(respostaGet.sortFila());
+		respostaGet.calcOrdenamentoTempo();
 
-		int naFrente = 0;
-		long espera = 300000;
 		for (Fila f : respostaGet.getInput()) {
-			f.setNaFrente(naFrente);
-			f.setEspera(espera);
-			naFrente++;
-			espera += 300000;
+			System.out.println("senha: " + f.getSenha() + 
+					" \nPrioridade: " + f.getPrioridade() + 
+					" \nEmissao: "+ f.getEmissao() +
+					" \nteste  : " + System.currentTimeMillis() +
+					" \nfim: " + f.getFim() +
+					" \nnaFrente: " + f.getNaFrente() +
+					" \nespera: " + f.getEspera() +
+					"\n\n");
 		}
 
-		document = (Document) Jsoup.connect(respostaGet.getPostTo().getUrl())
-				.data("nome", respostaGet.getNome()).data("chave", respostaGet.getChave())
-				.data("resultado", gson.toJson(respostaGet.getInput())).post();
+		document = (Document) Jsoup.connect(respostaGet.getPostTo().getUrl()).data("nome", respostaGet.getNome())
+				.data("chave", respostaGet.getChave()).data("resultado", gson.toJson(respostaGet.getInput())).post();
 
 		content = document.body().toString();
-		content = content.substring(content.indexOf("<body>")+6,content.indexOf("</body>"));
-		respostaGet= gson.fromJson(content, RespostaGet.class);
-
-		System.out.println(respostaGet.getMailTo());
-
+		content = content.substring(content.indexOf("<body>") + 6, content.indexOf("</body>"));
+		System.out.println(content);
 	}
 }
